@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Guessing Game</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+
+<h1>Word Guessing Game</h1>
+<div id="wordDisplay"></div>
+<div id="attempts"></div>
+<div id="message"></div>
+<input type="text" id="guessInput">
+<button onclick="guessLetter()">Guess</button>
+<button onclick="playAgain()">Play Again</button>
+
+<script>
+    let wordList = ["apple", "banana", "orange", "grape", "pineapple", "watermelon"];
+    let wordToGuess = '';
+    let guessedLetters = [];
+    let maxAttempts = 6;
+    let attempts = maxAttempts;
+
+    function chooseWord() {
+        return wordList[Math.floor(Math.random() * wordList.length)];
+    }
+
+    function displayWord(word, guessedLetters) {
+        let display = '';
+        for (let letter of word) {
+            if (guessedLetters.includes(letter)) {
+                display += letter + ' ';
+            } else {
+                display += '_ ';
+            }
+        }
+        return display;
+    }
+
+    function updateDisplay() {
+        document.getElementById('wordDisplay').innerText = displayWord(wordToGuess, guessedLetters);
+        document.getElementById('attempts').innerText = 'Attempts left: ' + attempts;
+    }
+
+    function guessLetter() {
+        let guess = document.getElementById('guessInput').value.toLowerCase();
+        document.getElementById('guessInput').value = '';
+        
+        if (guessedLetters.includes(guess)) {
+            document.getElementById('message').innerText = 'You already guessed that letter!';
+            return;
+        }
+
+        if (wordToGuess.includes(guess)) {
+            guessedLetters.push(guess);
+            if (guessedLetters.length === new Set(wordToGuess).size) {
+                document.getElementById('message').innerText = 'Congratulations! You guessed the word: ' + wordToGuess;
+                disableInput();
+            } else {
+                document.getElementById('message').innerText = 'Correct guess!';
+            }
+        } else {
+            attempts--;
+            if (attempts === 0) {
+                document.getElementById('message').innerText = 'Game over! The word was: ' + wordToGuess;
+                disableInput();
+            } else {
+                document.getElementById('message').innerText = 'Incorrect guess!';
+            }
+        }
+
+        updateDisplay();
+    }
+
+    function playAgain() {
+        wordToGuess = chooseWord();
+        guessedLetters = [];
+        attempts = maxAttempts;
+        document.getElementById('message').innerText = '';
+        updateDisplay();
+        enableInput();
+    }
+
+    function disableInput() {
+        document.getElementById('guessInput').disabled = true;
+        document.getElementsByTagName('button')[0].disabled = true;
+    }
+
+    function enableInput() {
+        document.getElementById('guessInput').disabled = false;
+        document.getElementsByTagName('button')[0].disabled = false;
+    }
+
+    playAgain();
+</script>
+
+</body>
+</html>
